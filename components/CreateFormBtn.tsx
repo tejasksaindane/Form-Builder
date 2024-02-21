@@ -54,6 +54,7 @@ function CreateFormBtn() {
         title: "Success",
         description: "Form Create",
       });
+      router.push(`/builder/${formId}`);
       console.log("Form Id", formId);
     } catch (error) {
       toast({
