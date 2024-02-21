@@ -1,5 +1,5 @@
 import React from 'react'
-import Link from "next/Link";
+import Link from 'next/link';
 
 
 const Logo = () => {
@@ -10,4 +10,4 @@ const Logo = () => {
   )
 }
 
-export default Logo
+export default Logo;
