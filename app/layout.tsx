@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/ui/providers/ThemeProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -28,8 +28,8 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-            <Toaster/>
-            </ThemeProvider>
+            <Toaster />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
