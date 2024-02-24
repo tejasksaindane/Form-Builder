@@ -2,7 +2,6 @@ import { GetFormById } from "@/actions/form";
 import FormBuilder from "@/components/FormBuilder";
 import React from "react";
 
-type Props = {};
 
 async function BuilderPage({
   params,

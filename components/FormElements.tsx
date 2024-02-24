@@ -2,19 +2,18 @@ import { TextFieldFormElement } from "./fields/TextField";
 
 export type ElementsType = "TextField";
 export type FormElement = {
-    type: ElementsType;
+  type: ElementsType;
 
-    construct: (id: string) => FormElementInstance;
+  construct: (id: string) => FormElementInstance;
 
-    designerBtnElement: {
-        icon: React.ElementType;
-        label: string;
-    }
-    designerComponent: React.FC;
-    formComponent: React.FC;
-    propertiesComponent: React.FC;
-    
-}
+  designerBtnElement: {
+    icon: React.ElementType;
+    label: string;
+  };
+  designerComponent: React.FC<{ elementInstance: FormElementInstance }>;
+  formComponent: React.FC;
+  propertiesComponent: React.FC;
+};
 export type FormElementInstance = {
     id: string;
     type: ElementsType;

@@ -11,7 +11,7 @@ import DragOverlayWrapper from "./DragOverlayWrapper";
 
 function FormBuilder({ form }: { form: Form }) {
   return (
-    <DndContext>
+    <DndContext sensors={sensors}>
       <main className="flex flex-col w-full">
         <nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
           <h2 className="truncate font-medium">
