@@ -103,7 +103,7 @@ function FormBuilder({ form }: { form: Form }) {
               <Button variant={"link"} asChild>
                 <Link href={"/forms/${form.id}"} className="gap-2">
                   <BsArrowRight />
-                  Go Back Home
+                 Form Details
                 </Link>
               </Button>
             </div>
