@@ -82,8 +82,22 @@ async function FormDetailPage({
           className="shadow-md shadow-red-600"
         />
       </div>
+      <div className="container pt-10">
+        <SubmissionsTable id={form.id} />
+      </div>
     </>
   );
 }
+
+function SubmissionsTable({ id }: { id: number }){
+  return (
+    <>
+      <h1 className="text-2xl font-bold my-4">
+        Sumbission
+      </h1>
+    </>
+  )
+}
+
 export default FormDetailPage;
 // 3:07:00
