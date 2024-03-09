@@ -1,17 +1,9 @@
-import { GetFormStats, getForms } from "@/actions/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { GetFormStats, GetForms } from "@/actions/form";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
 import { ReactNode, Suspense } from "react";
 import { LuView } from "react-icons/lu";
-import { FaEdit, FaWpforms } from "react-icons/fa";
+import { FaWpforms } from "react-icons/fa";
 import { HiCursorClick } from "react-icons/hi";
 import { TbArrowBounce } from "react-icons/tb";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +14,7 @@ import { formatDistance } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BiRightArrowAlt } from "react-icons/bi";
+import { FaEdit } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -30,9 +23,9 @@ export default function Home() {
         <CardStatsWrapper />
       </Suspense>
       <Separator className="my-6" />
-      <h2 className="text-4xl font-bold col-span-2">Your Forms</h2>
+      <h2 className="text-4xl font-bold col-span-2">Your forms</h2>
       <Separator className="my-6" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid gric-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CreateFormBtn />
         <Suspense
           fallback={[1, 2, 3, 4].map((el) => (
@@ -56,25 +49,25 @@ interface StatsCardProps {
   loading: boolean;
 }
 
- function StatsCards(props: StatsCardProps) {
+function StatsCards(props: StatsCardProps) {
   const { data, loading } = props;
 
   return (
     <div className="w-full pt-8 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       <StatsCard
-        title="Total Visits"
+        title="Total visits"
         icon={<LuView className="text-blue-600" />}
-        helperText="All time form Visits"
+        helperText="All time form visits"
         value={data?.visits.toLocaleString() || ""}
         loading={loading}
         className="shadow-md shadow-blue-600"
       />
 
       <StatsCard
-        title="Total Submissions"
+        title="Total submissions"
         icon={<FaWpforms className="text-yellow-600" />}
         helperText="All time form submissions"
-        value={data?.visits.toLocaleString() || ""}
+        value={data?.submissions.toLocaleString() || ""}
         loading={loading}
         className="shadow-md shadow-yellow-600"
       />
@@ -82,7 +75,7 @@ interface StatsCardProps {
       <StatsCard
         title="Submission rate"
         icon={<HiCursorClick className="text-green-600" />}
-        helperText="Visits that results in form submission"
+        helperText="Visits that result in form submission"
         value={data?.submissionRate.toLocaleString() + "%" || ""}
         loading={loading}
         className="shadow-md shadow-green-600"
@@ -92,7 +85,7 @@ interface StatsCardProps {
         title="Bounce rate"
         icon={<TbArrowBounce className="text-red-600" />}
         helperText="Visits that leaves without interacting"
-        value={data?.submissionRate.toLocaleString() || ""}
+        value={data?.submissionRate.toLocaleString() + "%" || ""}
         loading={loading}
         className="shadow-md shadow-red-600"
       />
@@ -117,14 +110,13 @@ export function StatsCard({
 }) {
   return (
     <Card className={className}>
-      <CardHeader className="flex flex-row  items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+        {icon}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {!loading && (
+          {loading && (
             <Skeleton>
               <span className="opacity-0">0</span>
             </Skeleton>
@@ -138,11 +130,11 @@ export function StatsCard({
 }
 
 function FormCardSkeleton() {
-  return <Skeleton className="border-2 border-primary/20 h-[190px] w-full" />;
+  return <Skeleton className="border-2 border-primary-/20 h-[190px] w-full" />;
 }
 
 async function FormCards() {
-  const forms = await getForms();
+  const forms = await GetForms();
   return (
     <>
       {forms.map((form) => (
@@ -162,8 +154,10 @@ function FormCard({ form }: { form: Form }) {
           {!form.published && <Badge variant={"destructive"}>Draft</Badge>}
         </CardTitle>
         <CardDescription className="flex items-center justify-between text-muted-foreground text-sm">
-          {formatDistance(form.createdAt, new Date(), { addSuffix: true })}
-          {!form.published && (
+          {formatDistance(form.createdAt, new Date(), {
+            addSuffix: true,
+          })}
+          {form.published && (
             <span className="flex items-center gap-2">
               <LuView className="text-muted-foreground" />
               <span>{form.visits.toLocaleString()}</span>
@@ -185,13 +179,9 @@ function FormCard({ form }: { form: Form }) {
           </Button>
         )}
         {!form.published && (
-          <Button
-            asChild
-            variant={"secondary"}
-            className="w-full mt-2 text-md gap-4"
-          >
-            <Link href={`/forms/${form.id}`}>
-              Edit Form <FaEdit />
+          <Button asChild variant={"secondary"} className="w-full mt-2 text-md gap-4">
+            <Link href={`/builder/${form.id}`}>
+              Edit form <FaEdit />
             </Link>
           </Button>
         )}

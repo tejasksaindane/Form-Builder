@@ -1,25 +1,17 @@
 import { GetFormById, GetFormWithSubmissions } from "@/actions/form";
-import FormBuilder from "@/components/FormBuilder";
 import FormLinkShare from "@/components/FormLinkShare";
 import VisitBtn from "@/components/VisitBtn";
 import React, { ReactNode } from "react";
 import { StatsCard } from "../../page";
 import { LuView } from "react-icons/lu";
-import loading from "./loading";
 import { FaWpforms } from "react-icons/fa";
 import { HiCursorClick } from "react-icons/hi";
 import { TbArrowBounce } from "react-icons/tb";
 import { ElementsType, FormElementInstance } from "@/components/FormElements";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { formatDistance } from "date-fns";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format, formatDistance } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 async function FormDetailPage({
   params,
@@ -43,6 +35,7 @@ async function FormDetailPage({
   }
 
   const bounceRate = 100 - submissionRate;
+
   return (
     <>
       <div className="py-10 border-b border-muted">
@@ -58,19 +51,19 @@ async function FormDetailPage({
       </div>
       <div className="w-full pt-8 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 container">
         <StatsCard
-          title="Total Visits"
+          title="Total visits"
           icon={<LuView className="text-blue-600" />}
-          helperText="All time form Visits"
+          helperText="All time form visits"
           value={visits.toLocaleString() || ""}
           loading={false}
           className="shadow-md shadow-blue-600"
         />
 
         <StatsCard
-          title="Total Submissions"
+          title="Total submissions"
           icon={<FaWpforms className="text-yellow-600" />}
           helperText="All time form submissions"
-          value={visits.toLocaleString() || ""}
+          value={submissions.toLocaleString() || ""}
           loading={false}
           className="shadow-md shadow-yellow-600"
         />
@@ -78,7 +71,7 @@ async function FormDetailPage({
         <StatsCard
           title="Submission rate"
           icon={<HiCursorClick className="text-green-600" />}
-          helperText="Visits that results in form submission"
+          helperText="Visits that result in form submission"
           value={submissionRate.toLocaleString() + "%" || ""}
           loading={false}
           className="shadow-md shadow-green-600"
@@ -88,11 +81,12 @@ async function FormDetailPage({
           title="Bounce rate"
           icon={<TbArrowBounce className="text-red-600" />}
           helperText="Visits that leaves without interacting"
-          value={submissionRate.toLocaleString() || ""}
+          value={bounceRate.toLocaleString() + "%" || ""}
           loading={false}
           className="shadow-md shadow-red-600"
         />
       </div>
+
       <div className="container pt-10">
         <SubmissionsTable id={form.id} />
       </div>
@@ -124,6 +118,11 @@ async function SubmissionsTable({ id }: { id: number }) {
   formElements.forEach((element) => {
     switch (element.type) {
       case "TextField":
+      case "NumberField":
+      case "TextAreaField":
+      case "DateField":
+      case "SelectField":
+      case "CheckboxField":
         columns.push({
           id: element.id,
           label: element.extraAttributes?.label,
@@ -141,7 +140,7 @@ async function SubmissionsTable({ id }: { id: number }) {
     const content = JSON.parse(submission.content);
     rows.push({
       ...content,
-      SubmittedAt: submission.createdAt,
+      submittedAt: submission.createdAt,
     });
   });
 
@@ -157,52 +156,43 @@ async function SubmissionsTable({ id }: { id: number }) {
                   {column.label}
                 </TableHead>
               ))}
-              <TableHead className="text-muted-foreground text-right uppercase">
-                Submitted At
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}>
-                    {columns.map((column) => (
-                      <RowCell
-                        key={column.id}
-                        type={column.type}
-                        value={row[column.id]}
-                      />
-                    ))}
-                    <TableCell className="text-muted-foreground text-right">
-                      {formatDistance(row.submittedAt, new Date(), {
-                        addSuffix: true,
-                      })}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+              <TableHead className="text-muted-foreground text-right uppercase">Submitted at</TableHead>
             </TableRow>
           </TableHeader>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
+                {columns.map((column) => (
+                  <RowCell key={column.id} type={column.type} value={row[column.id]} />
+                ))}
+                <TableCell className="text-muted-foreground text-right">
+                  {formatDistance(row.submittedAt, new Date(), {
+                    addSuffix: true,
+                  })}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </div>
     </>
   );
 }
 
-
 function RowCell({ type, value }: { type: ElementsType; value: string }) {
   let node: ReactNode = value;
 
-  // switch (type) {
-  //   case "DateField":
-  //     if (!value) break;
-  //     const date = new Date(value);
-  //     node = <Badge variant={"outline"}>{format(date, "dd/mm/yyyy")}</Badge>
-  //     break;
-  //   case "CheckboxField":
-  //     const checked = value === "true" : "false";
-  //     node = <CheckBox checked={checked} disabled />
-  //     break;
-  //   default: break;
-      
-  // }
-  return <TableCell>{node}</TableCell>
-}
+  switch (type) {
+    case "DateField":
+      if (!value) break;
+      const date = new Date(value);
+      node = <Badge variant={"outline"}>{format(date, "dd/MM/yyyy")}</Badge>;
+      break;
+    case "CheckboxField":
+      const checked = value === "true";
+      node = <Checkbox checked={checked} disabled />;
+      break;
+  }
 
+  return <TableCell>{node}</TableCell>;
+}

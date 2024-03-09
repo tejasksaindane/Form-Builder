@@ -1,28 +1,30 @@
 "use client";
 
-import { formSchema } from '@/schemas/form';
-import React, { useEffect, useState } from 'react'
-import { Button } from './ui/button';
+import React, { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
-const VisitBtn = ({ shareUrl }: { shareUrl: string }) => {
+function VisitBtn({ shareUrl }: { shareUrl: string }) {
+  const [mounted, setMounted] = useState(false);
 
-    const[mounted,setMounted] = useState(false)
-    const shareLink = `${window.location.origin}/submit/${shareUrl}`
-    useEffect(() => {
-        setMounted(true);
-    },[])
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    if (!mounted) {
-        return null; //avoiding the window not defined error
-    }
+  if (!mounted) {
+    return null; // avoiding window not defined error
+  }
 
+  const shareLink = `${window.location.origin}/submit/${shareUrl}`;
   return (
-      <Button className='w-[200px] ' onClick={() => {
-          window.open(shareLink,"_blank")
-      }}>
-          Visit
-      </Button>
-  )
+    <Button
+      className="w-[200px]"
+      onClick={() => {
+        window.open(shareLink, "_blank");
+      }}
+    >
+      Visit
+    </Button>
+  );
 }
 
-export default VisitBtn
+export default VisitBtn;
